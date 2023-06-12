@@ -1,4 +1,7 @@
 using System.Net.Http.Headers;
+using Microsoft.OpenApi.Models;
+using Swagger;
+using Swashbuckle.AspNetCore.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -7,7 +10,7 @@ var env = builder.Environment;
 if (env.IsDevelopment())
 {
     builder.Configuration
-        .AddJsonFile("appsettings.developer.json", optional: true, reloadOnChange: true);
+        .AddJsonFile("appsettings.development.json", optional: true, reloadOnChange: true);
 }
 
 // Add services to the container.
@@ -31,7 +34,30 @@ builder.Services.AddHttpClient("defaultGPT", options =>
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v1",
+        Title = "ChatGPT API",
+        Description = "A .NET Core Web API for ChatGPT",
+        Contact = new OpenApiContact
+        {
+            Name = "Camilo Chaves",
+            Url = new Uri("https://linkedin.com/in/camilochaves")
+        },
+        License = new OpenApiLicense
+        {
+            Name = "Gnu License",
+            Url = new Uri("https://www.gnu.org/licenses/agpl-3.0.txt")
+        }
+    });
+
+    options.ExampleFilters();
+});
+
+builder.Services.AddSwaggerExamplesFromAssemblyOf<CompletionsExample>();
+builder.Services.AddSwaggerExamplesFromAssemblyOf<ImageExample>();
 
 var app = builder.Build();
 
