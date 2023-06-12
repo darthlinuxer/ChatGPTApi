@@ -1,0 +1,1 @@
+sudo docker run --rm -it --cpus=4 --cpuset-cpus=4,4,4,4 --memory=4g --memory-swap=4g --network host --hostname api --name api -v $(pwd):/home --workdir /home mcr.microsoft.com/dotnet/sdk:7.0 bash -c "dotnet watch run"
