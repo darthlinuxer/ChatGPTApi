@@ -65,6 +65,8 @@ namespace ChatGPTApi.Controllers
 
         /// <summary>
         /// https://platform.openai.com/docs/api-reference/completions/create
+        /// Completions are conversations with history
+        /// Check Examples on Swagger
         /// </summary>
         /// <param name="completion"></param>
         /// <returns></returns>
