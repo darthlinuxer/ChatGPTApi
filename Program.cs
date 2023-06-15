@@ -1,4 +1,7 @@
 using System.Net.Http.Headers;
+using System.Reflection;
+using ChatGPTApi.Controllers;
+using ChatGPTApi.SignalR;
 using Microsoft.OpenApi.Models;
 using Swagger;
 using Swashbuckle.AspNetCore.Filters;
@@ -16,9 +19,23 @@ if (env.IsDevelopment())
 // Add services to the container.
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("Angular", builder =>
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.WithOrigins("http://localhost:4200")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    });
+    options.AddPolicy("AngularHttps", builder =>
     {
         builder.WithOrigins("https://localhost:4200")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    });
+    options.AddPolicy("Any", builder =>
+    {
+       builder.AllowAnyOrigin()
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
@@ -54,10 +71,16 @@ builder.Services.AddSwaggerGen(options =>
     });
 
     options.ExampleFilters();
+    // Include XML comments if available
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    options.IncludeXmlComments(xmlPath);
 });
 
 builder.Services.AddSwaggerExamplesFromAssemblyOf<CompletionsExample>();
 builder.Services.AddSwaggerExamplesFromAssemblyOf<ImageExample>();
+builder.Services.AddSignalR();
+builder.Services.AddScoped<ChatGPTRestAPIController>();
 
 var app = builder.Build();
 
@@ -75,5 +98,6 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<ChatGPTHub>("/ChatGPTHub");
 
 app.Run();

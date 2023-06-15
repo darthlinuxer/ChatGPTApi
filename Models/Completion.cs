@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Models;
 
 /// <summary>
@@ -10,6 +12,7 @@ public class Completion
     /// ID of the model to use. You can use the List models API to see all of your available models, or see our Model overview for descriptions of them.
     /// </summary>
     /// <value>gpt-3.5-turbo</value>
+    [Required]
     public string Model { get; set; } = "gpt-3.5-turbo";
 
     /// <summary>
@@ -17,6 +20,7 @@ public class Completion
     /// </summary>
     /// <typeparam name="Message"></typeparam>
     /// <returns></returns>
+    [Required]
     public List<Message> Messages { get; set; } = new List<Message>();
     /// <summary>
     /// What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
@@ -37,7 +41,7 @@ public class Completion
     /// Whether to stream back partial progress. If set, tokens will be sent as data-only server-sent events as they become available, with the stream terminated by a data: [DONE] message.
     /// </summary>
     /// <value>false</value>
-    public bool Stream { get; } = false;
+    public bool Stream { get; set;} = false;
     /// <summary>
     /// Up to 4 sequences where the API will stop generating further tokens. The returned text will not contain the stop sequence.
     /// </summary>

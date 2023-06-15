@@ -13,7 +13,6 @@ public class CompletionsExample : IMultipleExamplesProvider<Completion>
         {
             Messages = new List<Message> {
                 new Message{Role="user",Content="Hi, what would could you say about ChatGPT future?"},
-                new Message{Role="user",Content="Do you think it could gain conscience?"}
             },
             Max_tokens = 500,
         });
@@ -27,6 +26,24 @@ public class CompletionsExample : IMultipleExamplesProvider<Completion>
             },
             Max_tokens = 500,
             Temperature = 0.5,
+            Top_p = 1,
+            N = 1,
+            Stop = null,
+            Presence_penalty = 0,
+            Frequency_penalty = 0,
+            User = "ChatGPTApi"
+        });
+
+         yield return SwaggerExample.Create<Completion>("Stream", new Completion
+        {
+            Model = "gpt-3.5-turbo",
+            Messages = new List<Message> {
+                new Message{Role="user",Content="Hi, who won the soccer world cup in 1970?"},
+                new Message{Role="user",Content="Who was the best player?"}
+            },
+            Max_tokens = 500,
+            Temperature = 0.5,
+            Stream = true,
             Top_p = 1,
             N = 1,
             Stop = null,
