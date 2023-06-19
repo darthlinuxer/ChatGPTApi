@@ -36,12 +36,12 @@ public class ChatGPTHub : Hub
     /// <param name="model"></param>
     /// <param name="max_tokens"></param>
     /// <returns></returns>
-    public async Task SendMessage(string prompt, string model = "gpt-3.5-turbo", int max_tokens=1000)
+    public async Task SendMessage(string prompt, string model = "gpt-3.5-turbo", int max_tokens = 1000)
     {
         if (string.IsNullOrEmpty(prompt)) prompt = "Say something nice";
         var result = await controller.SimpleReply(prompt, model, max_tokens);
         if (result is OkObjectResult okresult)
-        {          
+        {
             await Clients.Caller.SendAsync("ReceiveData", okresult.Value);
         }
         else if (result is BadRequestObjectResult badRequestResult)
@@ -75,11 +75,7 @@ public class ChatGPTHub : Hub
             {
                 var result = await streamReader.ReadLineAsync();
                 if (result == null) continue;
-                if (result.StartsWith("data:") && !result.Contains("DONE"))
-                {
-                    var data = result.Substring(6);
-                    await Clients.Caller.SendAsync("ReceiveStreamedData", data);
-                }
+                await Clients.Caller.SendAsync("ReceiveStreamedData", result);
             }
             Console.WriteLine($"Elapsed:{stopwatch.ElapsedMilliseconds}");
         }
